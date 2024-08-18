@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Panel;
 use App\Models\UserRole;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -47,12 +48,20 @@ class User extends Authenticatable
 
     public function getFilamentAvatar(): ?string
     {
-        return $this->avatar_url;
+        return asset('storage/'.$this->avatar_url);
+        // $avatar = $this->avatar_url;
+        // $path_folder = 'storage/avatars/';
+        // $path = $path_folder . $avatar;
+        // return storage_path($path);
     }
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar_url;
+        return asset('storage/'.$this->avatar_url);
+        // $avatar = $this->avatar_url;
+        // $path_folder = 'storage/avatars/';
+        // $path = $path_folder . $avatar;
+        // return storage_path($path);
     }
 
     public function user_role()
@@ -60,8 +69,8 @@ class User extends Authenticatable
         return $this->belongsTo(UserRole::class, 'user_role_id');
     }
 
-    public function canAccessPanel(Panel $panel): bool
+    public function canAccessCentral(Panel $panel): bool
     {
-        return str_ends_with($this->email, '@gmail.com') && $this->user_role_id == 1;
+        return $this->user_role_id == 1;
     }
 }

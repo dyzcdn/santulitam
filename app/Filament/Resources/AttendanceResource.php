@@ -3,22 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AttendanceResource\Pages;
-use App\Filament\Resources\AttendanceResource\RelationManagers;
+// use App\Filament\Resources\AttendanceResource\RelationManagers;
 use App\Models\Attendance;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+// use Illuminate\Database\Eloquent\Builder;
+// use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
 
     protected static ?string $navigationIcon = 'eva-calendar-outline';
-
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -30,9 +30,8 @@ class AttendanceResource extends Resource
                     ->relationship('theme', 'name')
                     ->required(),
                 Forms\Components\DateTimePicker::make('check_in')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('check_out')
-                    ->required(),
+                    ->default(now())
+                    ->readOnly()
             ]);
     }
 
@@ -40,17 +39,16 @@ class AttendanceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('student_id')
+                Tables\Columns\TextColumn::make('student.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('theme_id')
+                Tables\Columns\TextColumn::make('theme.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('check_in')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('check_out')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('status')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

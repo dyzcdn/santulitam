@@ -1,8 +1,11 @@
 <?php
 
 use App\Models\User;
+use App\Models\Attendance;
 use App\Filament\Pages\StudentPage;
 use Illuminate\Support\Facades\Route;
+use App\Filament\Pages\Auth\EditProfile;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\QrGeneratorController;
 
 /*
@@ -16,10 +19,10 @@ use App\Http\Controllers\QrGeneratorController;
 |
 */
 
-Route::get('/', function () {
-    // return view('welcome');
-    return redirect('/central/');
-});
+// Route::get('/', function () {
+//     // return view('welcome');
+//     return redirect('/central/');
+// });
 
 Route::get('/u', function () {
     $u = User::all();
@@ -32,6 +35,10 @@ Route::get('/phpinfo', function () {
     phpinfo();
 });
 
-Route::get('/santulitam-register', [StudentPage::class, 'form']);
+Route::get('/epro', EditProfile::class);
+
+// Route::get('/santulitam-register', [StudentPage::class, 'form']);
 
 Route::get('/qr/student/{value}', [QrGeneratorController::class, 'student']);
+
+Route::resource('scan-attendances', AttendanceController::class);

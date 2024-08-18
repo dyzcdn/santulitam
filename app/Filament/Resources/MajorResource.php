@@ -40,7 +40,7 @@ class MajorResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('faculty_id')
+                Tables\Columns\TextColumn::make('faculty.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

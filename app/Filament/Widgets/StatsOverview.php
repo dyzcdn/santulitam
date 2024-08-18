@@ -23,7 +23,7 @@ class StatsOverview extends BaseWidget
                 ->icon('heroicon-o-user-group')
                 ->color('primary')
                 ->description('Last 30 days'),
-            Stat::make('Average time on page', '3:12')
+            Stat::make('Average time on page', $averageTimeOnPage)
                 ->icon('heroicon-o-clock')
                 ->color('warning')
                 ->description('Last 30 days'),

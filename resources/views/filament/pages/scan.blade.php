@@ -1,41 +1,51 @@
 <x-filament-panels::page>
-    <h1>Hallo Semua</h1>
-    <div class=" w-0.9 justify-content-center">
+    <div class="w-0.9 text-center justify-center justify-content-center">
         <div id="reader"></div>
+        <div id="result"></div>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title
-                    ">Card title</h5>
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    @push('styles')
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>    
+    @endpush
     @push('scripts')
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script>
+        const formatsToSupport = [
+            Html5QrcodeSupportedFormats.QR_CODE,
+            Html5QrcodeSupportedFormats.UPC_A,
+            Html5QrcodeSupportedFormats.UPC_E,
+            Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+        ];
+
+        const scanner = new Html5QrcodeScanner(
+            "reader", 
+            { fps: 20, qrbox: { width: 400, height: 400 }, formatsToSupport: formatsToSupport }
+        );
+        
+        const csrfToken = '{{ csrf_token() }}';
+        const themeId = 3;
+
         function onScanSuccess(decodedText, decodedResult) {
-        // handle the scanned code as you like, for example:
-        // console.log(`Code matched = ${decodedText}`, decodedResult);
-        $('#result').val(decodedText);
+            // Handle the scanned code as you like
+            document.getElementById("result").innerHTML = `
+                <h2>Success!</h2>
+                <p>NIM Terdeteksi: <b>${decodedText}</b></p>
+                <br>
+                <form action="{{ route('scan-attendances.store') }}" method="POST">
+                    <input type="hidden" name="_token" value="${csrfToken}">
+                    <input type="hidden" name="nim" value="${decodedText}">
+                    <input type="hidden" name="theme_id" value="${themeId}">
+                    <button type="submit" style="--c-400:var(--primary-400);--c-500:var(--primary-500);--c-600:var(--primary-600);" class="fi-btn relative grid-flow-col items-center justify-center font-semibold outline-none transition duration-75 focus-visible:ring-2 rounded-lg fi-color-custom fi-btn-color-primary fi-color-primary fi-size-md fi-btn-size-md gap-1.5 px-3 py-2 text-sm inline-grid shadow-sm bg-custom-600 text-white hover:bg-custom-500 focus-visible:ring-custom-500/50 dark:bg-custom-500 dark:hover:bg-custom-400 dark:focus-visible:ring-custom-400/50 fi-ac-action fi-ac-btn-action">Scan again</button>
+                </form>
+            `;
+
+            scanner.clear();
+            document.getElementById("reader").remove();
         }
 
-        function onScanFailure(error) {
-        // handle scan failure, usually better to ignore and keep scanning.
-        // for example:
-        console.warn(`Code scan error = ${error}`);
+        function onScanError(err) {
+            console.error(`Scan error: ${err}`);
         }
 
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader",
-        { fps: 10, qrbox: {width: 250, height: 250} },
-        /* verbose= */ false);
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        scanner.render(onScanSuccess, onScanError);
     </script>
     @endpush
 </x-filament-panels::page>

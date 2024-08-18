@@ -15,7 +15,7 @@ class Attendance extends Model
         'student_id',
         'theme_id',
         'check_in',
-        'check_out',
+        'status',
     ];
 
     public function student()
@@ -26,5 +26,16 @@ class Attendance extends Model
     public function theme()
     {
         return $this->belongsTo(Theme::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (is_null($model->check_in)) {
+                $model->check_in = now();
+            }
+        });
     }
 }

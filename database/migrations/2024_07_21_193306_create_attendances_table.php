@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('theme_id');
+            $table->timestamp('check_in')->useCurrent();
+            // $table->timestamp('check_out')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
+
+            // Menambahkan foreign key (opsional, sesuaikan dengan skema database Anda)
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreign('theme_id')->references('id')->on('themes')->onDelete('cascade');
         });
     }
 

@@ -7,6 +7,7 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Pages\Auth\EditProfile;
 use Filament\Http\Middleware\Authenticate;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Illuminate\Session\Middleware\StartSession;
@@ -26,8 +27,12 @@ class CentralPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('central')
-            ->path('central')
+            ->id('')
+            ->path('')
+            ->brandLogo(asset('logo/logo-santulitam-light.png'))
+            ->darkModeBrandLogo(asset('logo/logo-santulitam-dark.png'))
+            ->brandLogoHeight('50px')
+            // ->profile(EditProfile::class)
             ->login()
             ->colors([
                 'danger'    => Color::Red,

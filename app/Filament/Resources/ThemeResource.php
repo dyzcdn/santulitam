@@ -17,7 +17,7 @@ class ThemeResource extends Resource
 {
     protected static ?string $model = Theme::class;
 
-    protected static ?string $navigationIcon = 'eos-activate-subscriptions-o';
+    protected static ?string $navigationIcon = 'far-gem';
 
     protected static ?string $navigationGroup = 'Karisma';
 
