@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Filament\Notifications\Notification;
 
 class AttendanceController extends Controller
 {
@@ -36,6 +37,21 @@ class AttendanceController extends Controller
 
         $student = Student::where('nim', $request->nim)->firstOrFail();
 
+        // Cek apakah sudah ada kehadiran untuk NIM ini pada hari yang sama
+        $existingAttendance = Attendance::where('student_id', $student->id)
+            ->whereDate('check_in', now()->toDateString())
+            ->exists();
+
+        if ($existingAttendance) {
+            Notification::make()
+                ->title('Gagal')
+                ->body('Data kehadiran untuk NIM ini sudah tercatat pada hari ini.')
+                ->danger()
+                ->send();
+
+            return redirect()->back();
+        }
+
         // Tentukan status berdasarkan waktu check-in
         $checkInTime = now();
         $status = $this->determineStatus($checkInTime);
@@ -47,8 +63,13 @@ class AttendanceController extends Controller
             'status' => $status,
         ]);
 
-        return redirect('/scaner')
-            ->with('success', 'Attendance created successfully.');
+        Notification::make()
+            ->title('Berhasil')
+            ->body('Attendance created successfully.')
+            ->success()
+            ->send();
+
+        return redirect('/scaner');
     }
 
     /**

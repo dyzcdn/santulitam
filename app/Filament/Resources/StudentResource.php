@@ -6,21 +6,17 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Student;
 use Filament\Forms\Form;
-// use Actions\CreateAction;
 use Filament\Tables\Table;
-// use App\Imports\MyStudentImport;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
-// use Filament\Actions\ActionGroup;
-// use Filament\Support\Enums\ActionSize;
+use Filament\Actions\ActionGroup;
 use pxlrbt\FilamentExcel\Columns\Column;
-// use Illuminate\Database\Eloquent\Builder;
-// use EightyNine\ExcelImport\ExcelImportAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use App\Filament\Resources\StudentResource\Pages;
-// use Illuminate\Database\Eloquent\SoftDeletingScope;
-// use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-// use App\Filament\Resources\StudentResource\RelationManagers; 
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StudentResource\RelationManagers;
 
 class StudentResource extends Resource
 {
@@ -29,6 +25,8 @@ class StudentResource extends Resource
     protected static ?string $navigationIcon = 'fas-people-group';
 
     protected static ?string $navigationGroup = 'Data Master';
+
+    public static ?string $formatQR = 'png';
 
     public static function form(Form $form): Form
     {
@@ -40,8 +38,6 @@ class StudentResource extends Resource
                 Forms\Components\TextInput::make('nim')
                     ->required()
                     ->maxLength(255),
-                // Forms\Components\FileUpload::make('image')
-                //     ->image(),
                 Forms\Components\Select::make('major_id')
                     ->relationship('major', 'name')
                     ->required(),
@@ -54,20 +50,9 @@ class StudentResource extends Resource
                     ->maxLength(255)
                     ->default(null),
                 Forms\Components\Select::make('peleton_id')
-                ->relationship('peleton', 'name')
-                ->required(),
+                    ->relationship('peleton', 'name')
+                    ->required(),
             ]);
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            // ExcelImportAction::make()
-            //     ->slideOver()
-            //     ->color("primary")
-            //     ->use(MyStudentImport::class),
-            // CreateAction::make(),
-        ];
     }
 
     public static function table(Table $table): Table
@@ -79,16 +64,18 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('nim')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('qr')
-                    ->defaultImageUrl(fn(Student $record) => url('/qr/student\/') . $record->nim),
+                    ->defaultImageUrl(fn(Student $record) => url('/storage/qr-codes/QR-') . $record->nim . '.' . self::$formatQR),
+                    // ->defaultImageUrl(fn(Student $record) => url('/qr/student\/') . base64_encode($record->nim) . '/' . self::$formatQR),
                 Tables\Columns\TextColumn::make('major.name')
                     ->description(fn(Student $record) => $record->major->faculty->name)
+                    ->wrap()
                     ->label('Major')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('peleton.nama')
+                Tables\Columns\TextColumn::make('peleton.name')
                     ->label('Peleton')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -101,43 +88,23 @@ class StudentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // Add filters if needed
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                ]),
-                ExportBulkAction::make()->exports([
-                    ExcelExport::make()->withColumns([
-                        Column::make('id')
-                                ->heading('ID'),
-                            Column::make('name')
-                                ->heading('Name'),
-                            Column::make('nim')
-                                ->heading('NIM'),
-                            Column::make('image')
-                                ->heading('Image'),
-                            Column::make('major_id')
-                                ->heading('Major ID'),
-                            Column::make('email')
-                                ->heading('Email'),
-                            Column::make('phone')
-                                // ->format(DataType::TYPE_STRING)
-                                ->heading('Phone'),
-                            Column::make('peleton_id')
-                                ->heading('Peleton ID'),
-                    ]),                
-                ]),
+                ])
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            // Define relations if needed
         ];
     }
 
@@ -147,14 +114,23 @@ class StudentResource extends Resource
             'index' => Pages\ListStudents::route('/'),
             'create' => Pages\CreateStudent::route('/create'),
             'edit' => Pages\EditStudent::route('/{record}/edit'),
-            // ActionGroup::make([
-            //     'QR' => Pages\QR::route('/qr'),
-            // ])
-            //     ->label('More actions')
-            //     ->icon('heroicon-m-ellipsis-vertical')
-            //     ->size(ActionSize::Small)
-            //     ->color('primary')
-            //     ->button()
+            // 'view' => Pages\ViewStudent::route('/{record}')
         ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('nim')
+                    ->label('NIM'),
+                TextEntry::make('name')
+                    ->label('Nama'),
+                TextEntry::make('peleton.name')
+                    ->label('Peleton'),
+                ImageEntry::make('qr-code')
+                    ->defaultImageUrl(fn(Student $record) => url('/storage/qr-codes/QR-') . $record->nim . '.' . self::$formatQR)
+                    ->label('QR Code'),
+            ]);
     }
 }

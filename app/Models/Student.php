@@ -14,9 +14,9 @@ class Student extends Model
         'nim',
         'image',
         'major_id',
+        'peleton_id',
         'email',
-        'phone',
-        'peleton_id'
+        'phone'
     ];
 
     public function major()

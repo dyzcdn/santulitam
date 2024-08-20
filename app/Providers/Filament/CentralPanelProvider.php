@@ -6,8 +6,10 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
+use Filament\Facades\Filament;
 use Filament\Support\Colors\Color;
 use Filament\Pages\Auth\EditProfile;
+use Filament\Navigation\UserMenuItem;
 use Filament\Http\Middleware\Authenticate;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Illuminate\Session\Middleware\StartSession;
@@ -20,6 +22,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 
 class CentralPanelProvider extends PanelProvider
 {
@@ -29,11 +32,14 @@ class CentralPanelProvider extends PanelProvider
             ->default()
             ->id('')
             ->path('')
+            ->brandName('Santulitam')
             ->brandLogo(asset('logo/logo-santulitam-light.png'))
             ->darkModeBrandLogo(asset('logo/logo-santulitam-dark.png'))
             ->brandLogoHeight('50px')
             // ->profile(EditProfile::class)
             ->login()
+            // ->topNavigation()
+            ->sidebarWidth('22rem')
             ->colors([
                 'danger'    => Color::Red,
                 'gray'      => Color::Slate,
@@ -73,6 +79,7 @@ class CentralPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            // ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
             ->plugin(
                 BreezyCore::make()
                 ->myProfile(
@@ -101,5 +108,17 @@ class CentralPanelProvider extends PanelProvider
                         fn () => auth()->user()->user_role_id==1
                     )
             );
+    }
+
+    public function boot(): void
+    {
+        Filament::serving(function () {
+            Filament::registerUserMenuItems([
+                UserMenuItem::make()
+                    ->label('Settings')
+                    ->url('settings')
+                    ->icon('heroicon-s-cog')
+            ]);
+        });
     }
 }

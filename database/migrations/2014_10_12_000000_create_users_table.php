@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->default(strtolower(Str::random(8)))->unique();
             $table->string('email')->unique();
-            $table->foreignId('user_role_id')->constrained('user_roles')->cascadeOnDelete()->default(3);
+            // $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete()->default(3);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->default(Hash::make('password'));
             $table->string('avatar_url')->default('avatar.jpg');

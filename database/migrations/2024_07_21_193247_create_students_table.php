@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('nim')->unique();
             $table->string('image')->nullable();
             $table->foreignId('major_id')->constrained('majors')->cascadeOnDelete();
+            $table->foreignId('peleton_id')->constrained('peletons');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
-            $table->foreignId('peleton_id')->constrained('peletons');
             $table->timestamps();
         });
     }

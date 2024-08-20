@@ -2,18 +2,27 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
-use App\Models\UserRole;
+// use Filament\Models\Contracts\HasTenants;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Collection;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use TwoFactorAuthenticatable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -25,6 +34,7 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar_url',
+        'email_verified_at',
     ];
 
     /**
@@ -64,13 +74,13 @@ class User extends Authenticatable
         // return storage_path($path);
     }
 
-    public function user_role()
-    {
-        return $this->belongsTo(UserRole::class, 'user_role_id');
-    }
+    // public function roles()
+    // {
+    //     return $this->belongsTo(Role::class, 'role_id');
+    // }
 
-    public function canAccessCentral(Panel $panel): bool
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->user_role_id == 1;
+        return $this->hasRole(['Super Admin', 'Admin', 'Cofas', 'Cofas Mobile']);
     }
 }
