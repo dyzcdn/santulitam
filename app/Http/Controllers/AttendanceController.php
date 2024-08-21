@@ -35,7 +35,19 @@ class AttendanceController extends Controller
             'theme_id' => 'required',
         ]);
 
-        $student = Student::where('nim', $request->nim)->firstOrFail();
+        // Cari mahasiswa berdasarkan NIM
+        $student = Student::where('nim', $request->nim)->first();
+
+        if (!$student) {
+            // Jika NIM tidak ditemukan, tampilkan notifikasi
+            Notification::make()
+                ->title('NIM not available')
+                ->danger()
+                ->body('Sorry, the this NIM is not registered.')
+                ->send();
+
+            return redirect()->back();
+        }
 
         // Cek apakah sudah ada kehadiran untuk NIM ini pada hari yang sama
         $existingAttendance = Attendance::where('student_id', $student->id)
@@ -45,7 +57,7 @@ class AttendanceController extends Controller
         if ($existingAttendance) {
             Notification::make()
                 ->title('Gagal')
-                ->body('Data kehadiran untuk NIM ini sudah tercatat pada hari ini.')
+                ->body('Attendance data for this NIM was recorded today.')
                 ->danger()
                 ->send();
 
@@ -64,7 +76,7 @@ class AttendanceController extends Controller
         ]);
 
         Notification::make()
-            ->title('Berhasil')
+            ->title('Success')
             ->body('Attendance created successfully.')
             ->success()
             ->send();
@@ -79,12 +91,12 @@ class AttendanceController extends Controller
     {
         $checkInHour = $checkInTime->format('H');
 
-        if ($checkInHour < 8) {
-            return 'hadir';
+        if ($checkInHour < 7) {
+            return 'Hadir';
         } elseif ($checkInHour < 9) {
-            return 'terlambat';
+            return 'Terlambat';
         } else {
-            return 'alfa';
+            return 'Alfa';
         }
     }
 

@@ -122,7 +122,7 @@
                                         class="text-xs font-medium text-muted-foreground group-focus-within:text-white text-gray-400">No HP tergabung dengan grup WhatsApp Karisma</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input type="text" name="phone" placeholder="081234567890" required autocomplete="on"
+                                    <input type="text" name="phone" placeholder="081234567890" autocomplete="on"
                                         class="block w-full border-0 bg-transparent p-0 text-sm file:my-1 placeholder:text-muted-foreground/90 focus:outline-none focus:ring-0 focus:ring-teal-500 sm:leading-7 text-foreground">
                                 </div>
                             </div>
@@ -148,5 +148,40 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: '{{ session('success') }}',
+        timer: 3000,
+        showConfirmButton: false
+    });
+</script>
+@endif
+
+@if(session('danger'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: '{{ session('danger') }}',
+        timer: 3000,
+        showConfirmButton: false
+    });
+</script>
+@endif
+
+@if ($errors->any())
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Input Data Gagal',
+            html: '{!! implode("<br>", $errors->all()) !!}',
+            confirmButtonText: 'Tutup'
+        });
+    </script>
+@endif
 </body>
 </html>

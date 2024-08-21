@@ -27,7 +27,9 @@ class StudentController extends Controller
      */
     public function create(): View
     {
-        return view('student');
+        $majors = Major::all();
+        $peletons = Peleton::all();
+        return view('student', compact('majors','peletons'));
     }
 
     /**
@@ -35,7 +37,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $validasi = $this->validate($request, [
             'name'          => 'required',
             'nim'           => 'required|min:5',
             'major_id'      => 'required',
@@ -44,7 +46,7 @@ class StudentController extends Controller
             'phone'         => 'required'
         ]);
 
-        Student::create([
+        $student = Student::create([
             'name'          => Str::title($request->name),
             'nim'           => $request->nim,
             'major_id'      => $request->major_id,
@@ -53,7 +55,13 @@ class StudentController extends Controller
             'phone'         => $request->phone
         ]);
 
-        return redirect('/qr/student/' . $request->nim);
+        if ($student) {
+            return redirect('/qr/student/' . $student->nim)->with('success', 'Data Berhasil Disimpan!');
+        } else {
+            return redirect()->route('pendataan-peserta-karisma.index')->with('danger', 'Data Gagal Disimpan!');
+        }
+
+        // return redirect('/qr/student/' . $request->nim)->with(['success' => 'Data Berhasil Disimpan!']);
         // return redirect()->route('pendataan-peserta-karisma.create')->with(['success' => 'Data Berhasil Disimpan!']);
     }
 

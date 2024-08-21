@@ -9,6 +9,9 @@
 <body>
   <!-- component -->
 <div class="bg-black text-white flex min-h-screen flex-col items-center pt-16 sm:justify-center sm:pt-0">
+    @if(Session::has('message'))
+    <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    @endif
     <a href="#">
         <div class="text-foreground font-semibold text-2xl tracking-tighter mx-auto flex items-center gap-2">
             <div>
@@ -174,5 +177,6 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

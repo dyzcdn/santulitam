@@ -75,14 +75,14 @@ class DatabaseSeeder extends Seeder
         $user4->assignRole($role4);
 
 
-        // $this->call([
-        //     CofasilitatorSeeder::class,
-        //     PeletonSeeder::class,
-        //     FacultySeeder::class,
-        //     MajorSeeder::class,
-        //     StudentSeeder::class,
-        //     ThemeSeeder::class,
-        //     AttendanceSeeder::class,
-        // ]);
+        $this->call([
+            CofasilitatorSeeder::class,
+            PeletonSeeder::class,
+            FacultySeeder::class,
+            MajorSeeder::class,
+            StudentSeeder::class,
+            ThemeSeeder::class,
+            AttendanceSeeder::class,
+        ]);
     }
 }
