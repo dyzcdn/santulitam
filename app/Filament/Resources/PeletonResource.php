@@ -17,7 +17,7 @@ class PeletonResource extends Resource
 {
     protected static ?string $model = Peleton::class;
 
-    protected static ?string $navigationIcon = 'fas-group-arrows-rotate';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
 
     protected static ?string $navigationGroup = 'Data Master';
 

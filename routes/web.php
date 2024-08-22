@@ -1,14 +1,18 @@
 <?php
 
 use App\Models\User;
+use App\Models\Student;
 use App\Models\Attendance;
 use Illuminate\Support\Str;
 use App\Filament\Pages\StudentPage;
+use function Laravel\Prompts\search;
 use Illuminate\Support\Facades\Route;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SearchQRController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\QrGeneratorController;
+
 use App\Http\Controllers\StudentCardController;
 use App\Http\Controllers\CofasilitatorController;
 
@@ -35,6 +39,17 @@ Route::get('/u', function () {
     return $u;
 });
 
+Route::get('/api-students', function () {
+    // Ambil semua data mahasiswa
+    $students = Student::all();
+
+    // Kembalikan data sebagai response JSON
+    return response()->json([
+        'success' => true,
+        'data' => $students,
+    ]);
+});
+
 Route::get('/phpinfo', function () {
     // $r = Str::title('APAPUN ITU');
     phpinfo();
@@ -53,5 +68,8 @@ Route::resource('scan-attendances', AttendanceController::class);
 Route::resource('/pendataan-peserta-karisma', StudentController::class);
 
 Route::resource('/pendataan-cofasilitator', CofasilitatorController::class);
+
+Route::get('/download-qr', [SearchQRController::class, 'index'])->name('download-qr.index');
+Route::post('/download-qr', [SearchQRController::class, 'download'])->name('download-qr.download');
 
 Route::get('/student-card', [StudentCardController::class, 'index']);

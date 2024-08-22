@@ -21,7 +21,7 @@ return new class extends Migration
             // $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete()->default(3);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->default(Hash::make('password'));
-            $table->string('avatar_url')->default('avatar.jpg');
+            $table->string('avatar_url')->default('avatars/avatar.jpg');
             $table->json('custom_fields')->nullable();
             $table->rememberToken();
             $table->timestamps();

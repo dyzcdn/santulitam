@@ -26,8 +26,12 @@
         <div
             class="mx-5 border dark:border-b-white/50 dark:border-t-white/50 border-b-white/20 sm:border-t-white/20 shadow-[20px_0_20px_20px] shadow-slate-500/10 dark:shadow-white/20 rounded-lg border-white/20 border-l-white/20 border-r-white/20 sm:shadow-sm lg:rounded-xl lg:shadow-none">
             <div class="flex flex-col p-6">
-                <h3 class="text-xl font-semibold leading-6 tracking-tighter">Pendataan Cofasilitatot</h3>
-                <p class="mt-1.5 text-sm font-medium text-white/50">Hallo #KsatriaPetir, silahkan isi formulir untuk pendataan cofasilitator SAKARITAM.
+                <h3 class="text-xl font-semibold leading-6 tracking-tighter">Pendataan Cofasilitator</h3>
+                <p class="mt-1.5 text-sm font-medium text-white/50">
+                    Silahkan isi formulir untuk pendataan cofasilitator SAKARITAM.
+                </p>
+                <p class="mt-1.5 text-sm font-medium text-white/50">
+                    .
                 </p>
             </div>
             <div class="p-6 pt-0">
@@ -168,6 +172,9 @@
                         </label>
                     </div>
                     <div class="mt-4 flex items-center justify-end gap-x-2">
+                        <a href="https://santulitam.id" class="font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black h-10 px-4 py-2">
+                            Back
+                        </a>
                         <button
                             class="font-semibold hover:bg-black hover:text-white hover:ring hover:ring-white transition duration-300 inline-flex items-center justify-center rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black h-10 px-4 py-2"
                             type="submit">Submit</button>
@@ -177,6 +184,42 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: '{{ session('success') }}',
+        timer: 3000,
+        showConfirmButton: false
+    });
+</script>
+@endif
+
+@if(session('danger'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: '{{ session('danger') }}',
+        timer: 3000,
+        showConfirmButton: false
+    });
+</script>
+@endif
+
+@if ($errors->any())
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Input Data Gagal',
+            html: '{!! implode("<br>", $errors->all()) !!}',
+            confirmButtonText: 'Tutup'
+        });
+    </script>
+@endif
+</body>
 </body>
 </html>

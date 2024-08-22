@@ -8,6 +8,8 @@ use App\Models\Student;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
 
 class StudentController extends Controller
@@ -19,7 +21,7 @@ class StudentController extends Controller
     {
         $majors = Major::all();
         $peletons = Peleton::all();
-        return view('student', compact('majors','peletons'));
+        return view('student', compact('majors', 'peletons'));
     }
 
     /**
@@ -29,30 +31,61 @@ class StudentController extends Controller
     {
         $majors = Major::all();
         $peletons = Peleton::all();
-        return view('student', compact('majors','peletons'));
+        return view('student', compact('majors', 'peletons'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $validasi = $this->validate($request, [
+        // Validasi input
+        $this->validate($request, [
             'name'          => 'required',
             'nim'           => 'required|min:5',
             'major_id'      => 'required',
             'peleton_id'    => 'required',
-            'email'         => 'required',
-            'phone'         => 'required'
+            'email'         => 'required|email',
+            'phone'         => 'required',
+            'image'         => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk file foto
         ]);
 
+        // Mengunggah file foto
+        if ($request->file('image')) {
+            $image = $request->file('image');
+            $fileName = $request->nim . '.jpeg'; // Simpan sebagai JPEG
+            $directory = 'public/images';
+            $filePath = storage_path('app/' . $directory . '/' . $fileName);
+
+            // Cek apakah direktori ada, jika tidak maka buat direktori tersebut
+            if (!Storage::exists($directory)) {
+                Storage::makeDirectory($directory);
+            }
+
+            // Mengubah dan menyimpan gambar
+            try {
+                $imageResource = $this->createImageResource($image);
+                if ($imageResource === false) {
+                    return redirect()->back()->with('danger', 'Gagal memproses gambar, data tidak disimpan.');
+                }
+
+                // Simpan gambar sebagai JPEG
+                imagejpeg($imageResource, $filePath, 90); // Kualitas 90
+                imagedestroy($imageResource); // Hapus resource gambar dari memori
+            } catch (\Exception $e) {
+                return redirect()->back()->with('danger', 'Gagal menyimpan foto, data tidak disimpan. Kesalahan: ' . $e->getMessage());
+            }
+        }
+
+        // Menyimpan data ke database
         $student = Student::create([
             'name'          => Str::title($request->name),
             'nim'           => $request->nim,
             'major_id'      => $request->major_id,
             'peleton_id'    => $request->peleton_id,
             'email'         => $request->email,
-            'phone'         => $request->phone
+            'phone'         => $request->phone,
+            'image'         => $fileName ?? null, // Menyimpan nama file foto jika ada
         ]);
 
         if ($student) {
@@ -60,9 +93,36 @@ class StudentController extends Controller
         } else {
             return redirect()->route('pendataan-peserta-karisma.index')->with('danger', 'Data Gagal Disimpan!');
         }
+    }
 
-        // return redirect('/qr/student/' . $request->nim)->with(['success' => 'Data Berhasil Disimpan!']);
-        // return redirect()->route('pendataan-peserta-karisma.create')->with(['success' => 'Data Berhasil Disimpan!']);
+
+    /**
+     * Membuat resource gambar dari file input.
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @return resource|false
+     */
+    private function createImageResource($file)
+    {
+        $image = null;
+        $extension = $file->getClientOriginalExtension();
+
+        switch (strtolower($extension)) {
+            case 'jpeg':
+            case 'jpg':
+                $image = imagecreatefromjpeg($file->getPathname());
+                break;
+            case 'png':
+                $image = imagecreatefrompng($file->getPathname());
+                break;
+            case 'gif':
+                $image = imagecreatefromgif($file->getPathname());
+                break;
+            default:
+                return false;
+        }
+
+        return $image;
     }
 
     /**

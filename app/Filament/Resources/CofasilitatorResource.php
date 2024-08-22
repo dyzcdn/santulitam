@@ -17,7 +17,7 @@ class CofasilitatorResource extends Resource
 {
     protected static ?string $model = Cofasilitator::class;
 
-    protected static ?string $navigationIcon = 'iconpark-people';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
     
     protected static ?string $navigationGroup = 'Data Master';
 

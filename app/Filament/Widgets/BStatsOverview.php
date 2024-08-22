@@ -2,31 +2,37 @@
 
 namespace App\Filament\Widgets;
 
+use Carbon\Carbon;
 use App\Models\Student;
+use App\Models\Attendance;
 use App\Models\Cofasilitator;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
-class StatsOverview extends BaseWidget
+class BStatsOverview extends BaseWidget
 {
+    protected static ?string $heading = 'Students Statistic\'s';
+    
     protected function getStats(): array
     {
-        $mentors = Cofasilitator::count();
+        $cofasilitators = Cofasilitator::count();
         $students = Student::count();
-        $averageTimeOnPage = '3:12';
+
+        $today = Carbon::today();
+        $attendances = Attendance::whereDate('check_in', $today)->count();
         return [
-            Stat::make('Mentors', $mentors)
+            Stat::make('Cofasilitators', $cofasilitators)
                 ->icon('heroicon-o-users')
                 ->color('success')
-                ->description('Last 30 days'),
+                ->description('Count Total'),
             Stat::make('Students', $students)
                 ->icon('heroicon-o-user-group')
                 ->color('primary')
-                ->description('Last 30 days'),
-            Stat::make('Average time on page', $averageTimeOnPage)
+                ->description('Count Total'),
+            Stat::make('Attendances', $attendances)
                 ->icon('heroicon-o-clock')
                 ->color('warning')
-                ->description('Last 30 days'),
+                ->description('Today'),
         ];
     }
 }

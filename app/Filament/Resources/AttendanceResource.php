@@ -18,7 +18,7 @@ class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
 
-    protected static ?string $navigationIcon = 'eva-calendar-outline';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
     
     public static function form(Form $form): Form
     {

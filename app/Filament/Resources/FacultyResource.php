@@ -17,7 +17,7 @@ class FacultyResource extends Resource
 {
     protected static ?string $model = Faculty::class;
 
-    protected static ?string $navigationIcon = 'fas-building-columns';
+    protected static ?string $navigationIcon = 'heroicon-o-building-library';
 
     protected static ?string $navigationGroup = 'Instance';
 

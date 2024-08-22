@@ -17,7 +17,7 @@ class MajorResource extends Resource
 {
     protected static ?string $model = Major::class;
 
-    protected static ?string $navigationIcon = 'feathericon-target';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     protected static ?string $navigationGroup = 'Instance';
 

@@ -9,19 +9,20 @@ use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
-    use TwoFactorAuthenticatable;
+    // use TwoFactorAuthenticatable;
     use HasRoles;
 
     /**
@@ -32,6 +33,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
         'avatar_url',
         'email_verified_at',
@@ -56,23 +58,19 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function getFilamentAvatar(): ?string
-    {
-        return asset('storage/'.$this->avatar_url);
-        // $avatar = $this->avatar_url;
-        // $path_folder = 'storage/avatars/';
-        // $path = $path_folder . $avatar;
-        // return storage_path($path);
-    }
-
     public function getFilamentAvatarUrl(): ?string
     {
-        return asset('storage/'.$this->avatar_url);
-        // $avatar = $this->avatar_url;
-        // $path_folder = 'storage/avatars/';
-        // $path = $path_folder . $avatar;
-        // return storage_path($path);
+        return $this->avatar_url ? Storage::url("$this->avatar_url") : null;
     }
+
+    // public function getFilamentAvatarUrl(): ?string
+    // {
+    //     return asset('storage/'.$this->avatar_url);
+    //     // $avatar = $this->avatar_url;
+    //     // $path_folder = 'storage/avatars/';
+    //     // $path = $path_folder . $avatar;
+    //     // return storage_path($path);
+    // }
 
     // public function roles()
     // {

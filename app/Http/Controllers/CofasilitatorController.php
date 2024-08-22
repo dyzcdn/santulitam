@@ -39,9 +39,9 @@ class CofasilitatorController extends Controller
         
         $request->validate([
             'name'          => 'required|string|max:255',
-            'username'      => 'required|string|max:255|unique:users,username',
-            'nim'           => 'required|min:8|unique:cofasilitators,nim',
-            'email'         => 'required|email|unique:users,email',
+            'username'      => 'required|string|max:255|unique:users,username,bail',
+            'nim'           => 'required|min:8|unique:cofasilitators,nim,bail',
+            'email'         => 'required|email|unique:users,email,bail',
             'password'      => 'required|string|min:8|',
             'peleton'       => 'required|string|max:255',
         ]);
@@ -71,7 +71,11 @@ class CofasilitatorController extends Controller
         $user->assignRole($role);
 
         // return redirect('/qr/student/' . $request->nim);
-        return redirect()->route('pendataan-cofasilitator.index')->with('success', 'Data cofasilitator berhasil disimpan.');
+        if ($cofasilitator) {
+            return redirect()->route('pendataan-cofasilitator.index')->with('success', 'Data cofasilitator berhasil disimpan.');
+        } else {
+            return redirect()->route('pendataan-cofasilitator.index')->with('danger', 'Data cofasilitator Gagal Disimpan!');
+        }
     }
 
     /**

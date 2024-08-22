@@ -56,12 +56,12 @@ class AttendanceController extends Controller
 
         if ($existingAttendance) {
             Notification::make()
-                ->title('Gagal')
+                ->title('Failed')
                 ->body('Attendance data for this NIM was recorded today.')
                 ->danger()
                 ->send();
 
-            return redirect()->back();
+            return redirect()->route('filament..pages.scaner');
         }
 
         // Tentukan status berdasarkan waktu check-in
@@ -77,11 +77,11 @@ class AttendanceController extends Controller
 
         Notification::make()
             ->title('Success')
-            ->body('Attendance created successfully.')
+            ->body('Attendance has check in successfully.')
             ->success()
             ->send();
 
-        return redirect('/scaner');
+        return redirect()->route('filament..pages.scaner');
     }
 
     /**

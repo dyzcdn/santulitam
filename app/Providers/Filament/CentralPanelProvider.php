@@ -7,11 +7,13 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Facades\Filament;
+use Kenepa\Banner\BannerPlugin;
+use Filament\Navigation\MenuItem;
+use App\Filament\Pages\Auth\Login;
 use Filament\Support\Colors\Color;
 use Filament\Pages\Auth\EditProfile;
 use Filament\Navigation\UserMenuItem;
 use Filament\Http\Middleware\Authenticate;
-use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use GeoSot\FilamentEnvEditor\FilamentEnvEditorPlugin;
@@ -22,6 +24,8 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 
 class CentralPanelProvider extends PanelProvider
@@ -37,7 +41,7 @@ class CentralPanelProvider extends PanelProvider
             ->darkModeBrandLogo(asset('logo/logo-santulitam-dark.png'))
             ->brandLogoHeight('50px')
             // ->profile(EditProfile::class)
-            ->login()
+            ->login(Login::class)
             // ->topNavigation()
             ->sidebarWidth('22rem')
             ->colors([
@@ -79,24 +83,31 @@ class CentralPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->userMenuItems([
+                'profile' => MenuItem::make()
+                    ->label(fn() => auth()->user()->name)
+                    ->url(fn (): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle')
+            ])
             // ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
-            ->plugin(
-                BreezyCore::make()
-                ->myProfile(
-                    shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)
-                    shouldRegisterNavigation: true, // Adds a main navigation item for the My Profile page (default = false)
-                    navigationGroup: 'Settings', // Sets the navigation group for the My Profile page (default = null)
-                    hasAvatars: true, // Enables the avatar upload form component (default = false)
-                    slug: 'my-profile' // Sets the slug for the profile page (default = 'my-profile')
-                )
-                ->enableTwoFactorAuthentication(
-                    force: false, // force the user to enable 2FA before they can use the application (default = false)
-                    // action: CustomTwoFactorPage::class // optionally, use a custom 2FA page
-                )
-                ->enableSanctumTokens(
-                    permissions: ['my','custom','permissions'] // optional, customize the permissions (default = ["create", "view", "update", "delete"])
-                ),
-            )
+            ->plugins([
+                FilamentEditProfilePlugin::make()
+                ->slug('my-profile')
+                ->setTitle('My Profile')
+                ->setNavigationLabel('My Profile')
+                ->setNavigationGroup('Settings')
+                ->setIcon('heroicon-o-user')
+                ->shouldRegisterNavigation(false)
+                ->shouldShowDeleteAccountForm(true)
+                // ->shouldShowSanctumTokens()
+                ->shouldShowBrowserSessionsForm()
+                ->shouldShowAvatarForm()
+            ])
+            ->plugins([
+                BannerPlugin::make()
+                ->persistsBannersInDatabase()
+                ->bannerManagerAccessPermission('banner-manager')
+             ])
             ->plugin(
                 FilamentEnvEditorPlugin::make()
                     ->navigationGroup('System Tools')
@@ -115,9 +126,9 @@ class CentralPanelProvider extends PanelProvider
         Filament::serving(function () {
             Filament::registerUserMenuItems([
                 UserMenuItem::make()
-                    ->label('Settings')
-                    ->url('settings')
-                    ->icon('heroicon-s-cog')
+                    ->label('Scan QR')
+                    ->url('scaner')
+                    ->icon('heroicon-o-qr-code')
             ]);
         });
     }
