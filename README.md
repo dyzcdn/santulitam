@@ -3,7 +3,7 @@
 
 A demo application to illustrate how SAKARITAM Admin works.
 
-![SAKARITAM Demo](https://raw.githubusercontent.com/dyzcdn/santulitam/main/public/images/Dashboard%20-%20Santulitam.png)
+![SAKARITAM Demo](https://raw.githubusercontent.com/dyzcdn/santulitam/main/public/images/ScreenshotDashboardSakaritam.png)
 
 This project is named SAKARITAM or Sistem Absensi Karisma Santulitam. This web application is used to make it easier for Karisma Santulitam ITPLN 2024 participants.
 
