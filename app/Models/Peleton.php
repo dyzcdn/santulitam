@@ -14,9 +14,4 @@ class Peleton extends Model
         'name',
         'cofasilitator_id'
     ];
-
-    public function cofasilitator()
-    {
-        return $this->belongsTo(Cofasilitator::class);
-    }
 }

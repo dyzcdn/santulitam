@@ -116,9 +116,9 @@ class QrGeneratorController extends Controller
         $info = Storage::disk('local')->put($output_file, $generate); //storage/app/public/qr-codes/img-$value.png
 
         if($info){
-            return redirect('/pendataan-peserta-karisma')->with(['success' => 'Data Berhasil Disimpan & QR Tergenerate!']);
+            return redirect('/pendataan-peserta-karisma')->with(['success' => 'Data Berhasil Disimpan dan QR Tergenerate!']);
         } else {
-            return redirect('/pendataan-peserta-karisma/create')->with(['danger' => 'Data Gagal Disimpan [201]!']);
+            return redirect('/pendataan-peserta-karisma/create')->with(['danger' => session('danger') . ' QR tidak tergenerate!!']);
         }
     }
 }

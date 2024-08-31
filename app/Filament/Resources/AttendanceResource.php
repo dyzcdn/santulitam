@@ -3,16 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AttendanceResource\Pages;
-// use App\Filament\Resources\AttendanceResource\RelationManagers;
-use App\Models\User;
 use App\Models\Attendance;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
-// use Illuminate\Database\Eloquent\Builder;
-// use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
 
 class AttendanceResource extends Resource
 {
@@ -30,9 +30,21 @@ class AttendanceResource extends Resource
                 Forms\Components\Select::make('theme_id')
                     ->relationship('theme', 'name')
                     ->required(),
+                Forms\Components\Select::make('peleton_id')
+                    ->relationship('peleton', 'name')
+                    ->required(),
                 Forms\Components\DateTimePicker::make('check_in')
                     ->default(now())
-                    ->readOnly()
+                    ->readOnly(),
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'Hadir' => 'Hadir',
+                        'Izin' => 'Izin',
+                        'Sakit' => 'Sakit',
+                        'Terlambat' => 'Terlambat',
+                        'Sangat Terlambat' => 'Sangat Terlambat',
+                        'Tidak Hadir' => 'Tidak Hadir'
+                    ])
             ]);
     }
 
@@ -41,15 +53,24 @@ class AttendanceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('student.name')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('theme.name')
-                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('peleton.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('check_in')
-                    ->dateTime()
+                    ->dateTime('d F Y, H:i:s')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Hadir' => 'success',
+                        'Izin' => 'success',
+                        'Sakit' => 'success',
+                        'Terlambat' => 'warning',
+                        'Sangat Terlambat' => 'danger',
+                        'Tidak Hadir' => 'danger'
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -61,10 +82,30 @@ class AttendanceResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('peleton_id')
+                    ->label('Peleton')
+                    ->relationship('peleton', 'name')
+                    ->options(['all' => 'All']),
+                Filter::make('check_in')
+                    ->form([
+                        DatePicker::make('check_in_from')->label('Range Check In From'),
+                        DatePicker::make('check_in_until')->label('Range Check In Until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['check_in_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('check_in', '>=', $date),
+                            )
+                            ->when(
+                                $data['check_in_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('check_in', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

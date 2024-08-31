@@ -36,7 +36,6 @@ class CentralPanelProvider extends PanelProvider
             ->default()
             ->id('')
             ->path('')
-            ->brandName('Santulitam')
             ->brandLogo(asset('logo/logo-santulitam-light.png'))
             ->darkModeBrandLogo(asset('logo/logo-santulitam-dark.png'))
             ->brandLogoHeight('50px')

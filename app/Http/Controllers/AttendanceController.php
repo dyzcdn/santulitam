@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
 use App\Models\Student;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
+use App\Exports\ExportAttendance;
+use App\Models\Peleton;
+use Maatwebsite\Excel\Facades\Excel;
 use Filament\Notifications\Notification;
 
 class AttendanceController extends Controller
@@ -71,6 +74,7 @@ class AttendanceController extends Controller
         Attendance::create([
             'student_id' => $student->id,
             'theme_id' => $request->theme_id,
+            'peleton_id' => $request->peleton_id,
             'check_in' => $checkInTime,
             'status' => $status,
         ]);
@@ -96,7 +100,7 @@ class AttendanceController extends Controller
         } elseif ($checkInHour < 9) {
             return 'Terlambat';
         } else {
-            return 'Alfa';
+            return 'Sangat Terlambat';
         }
     }
 
@@ -130,5 +134,28 @@ class AttendanceController extends Controller
     public function destroy(Attendance $attendance)
     {
         //
+    }
+
+    public function export()
+    {
+        $peletonId = request('tableFilters.peleton_id.value');
+
+        // Ambil nama peleton, jika diperlukan untuk nama file
+        $peleton = Peleton::find($peletonId);
+        if (!$peleton && $peletonId) {
+            // Tangani kasus jika peleton tidak ditemukan
+            Notification::make()
+                ->title('Peleton not found')
+                ->danger()
+                ->body('The specified Peleton ID does not exist.')
+                ->send();
+
+            return redirect()->back();
+        }
+
+        // Format nama file dengan nama peleton atau default
+        $filename = 'Attendances-' . ($peleton ? $peleton->name : 'All') . '-' . date('ymdHis') . '.xlsx';
+
+        return Excel::download(new ExportAttendance($peletonId), $filename);
     }
 }

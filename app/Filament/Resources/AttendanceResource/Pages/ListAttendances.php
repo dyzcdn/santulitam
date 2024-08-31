@@ -12,8 +12,12 @@ class ListAttendances extends ListRecords
 
     protected function getHeaderActions(): array
     {
+        $decodeQueryString = urldecode(request()->getQueryString());
+
         return [
-            Actions\CreateAction::make(),
+            Actions\Action::make('export')
+                ->url(url('/attendances-export?' . $decodeQueryString)),
+            Actions\CreateAction::make()->label('New Attendance'),
         ];
     }
 }

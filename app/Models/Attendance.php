@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Theme;
+use App\Models\Peleton;
 use App\Models\Student;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +15,7 @@ class Attendance extends Model
     protected $fillable = [
         'student_id',
         'theme_id',
+        'peleton_id',
         'check_in',
         'status',
     ];
@@ -26,6 +28,11 @@ class Attendance extends Model
     public function theme()
     {
         return $this->belongsTo(Theme::class);
+    }
+
+    public function peleton()
+    {
+        return $this->belongsTo(Peleton::class);
     }
 
     protected static function boot()

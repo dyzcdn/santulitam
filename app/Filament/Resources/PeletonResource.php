@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PeletonResource\Pages;
-use App\Filament\Resources\PeletonResource\RelationManagers;
-use App\Models\Peleton;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Peleton;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\Cofasilitator;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
+use App\Filament\Resources\PeletonResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\PeletonResource\RelationManagers;
 
 class PeletonResource extends Resource
 {
@@ -29,7 +32,8 @@ class PeletonResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('cofasilitator_id')
-                    ->relationship('cofasilitator', 'name')
+                    ->options(Cofasilitator::all()->pluck('name', 'id')->toArray())
+                    ->multiple()
                     ->required(),
             ]);
     }
@@ -40,8 +44,12 @@ class PeletonResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('cofasilitator.name')
+                Tables\Columns\TextColumn::make('cofasilitator_id')
                     ->label('Cofasilitator')
+                    ->getStateUsing(function (Peleton $record) {
+                        $cofasilitatorIds = explode(',', $record->cofasilitator_id);
+                        return Cofasilitator::whereIn('id', $cofasilitatorIds)->pluck('name')->join(', ');
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -56,6 +64,7 @@ class PeletonResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -79,5 +88,22 @@ class PeletonResource extends Resource
             'create' => Pages\CreatePeleton::route('/create'),
             'edit' => Pages\EditPeleton::route('/{record}/edit'),
         ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('id')
+                    ->label('ID'),
+                TextEntry::make('name')
+                    ->label('Nama'),
+                TextEntry::make('cofasiitator_id')
+                    ->label('Cofasilitator')
+                    ->getStateUsing(function (Peleton $record) {
+                        $cofasilitatorIds = explode(',', $record->cofasilitator_id);
+                        return Cofasilitator::whereIn('id', $cofasilitatorIds)->pluck('name')->join(', ');
+                    })
+            ]);
     }
 }

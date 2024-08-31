@@ -1,18 +1,20 @@
 <?php
 
 use App\Models\User;
+use App\Models\Peleton;
 use App\Models\Student;
 use App\Models\Attendance;
 use Illuminate\Support\Str;
 use App\Filament\Pages\StudentPage;
 use function Laravel\Prompts\search;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApkController;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SearchQRController;
+
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\QrGeneratorController;
-
 use App\Http\Controllers\StudentCardController;
 use App\Http\Controllers\CofasilitatorController;
 
@@ -50,6 +52,25 @@ Route::get('/api-students', function () {
     ]);
 });
 
+Route::get('/api-peleton/{id}', function ($id) {
+    // Temukan peleton berdasarkan ID
+    $peleton = Peleton::find($id);
+
+    if ($peleton) {
+        // Jika peleton ditemukan, kembalikan data sebagai response JSON
+        return response()->json([
+            'success' => true,
+            'data' => $peleton,
+        ]);
+    } else {
+        // Jika peleton tidak ditemukan, kembalikan pesan error
+        return response()->json([
+            'success' => false,
+            'message' => 'Peleton not found',
+        ], 404);
+    }
+});
+
 Route::get('/phpinfo', function () {
     // $r = Str::title('APAPUN ITU');
     phpinfo();
@@ -64,6 +85,7 @@ Route::get('/qr/student/{value}/{format}', [QrGeneratorController::class, 'stude
 Route::get('/qr/student/{value}', [QrGeneratorController::class, 'save']);
 
 Route::resource('scan-attendances', AttendanceController::class);
+Route::get('/attendances-export', [AttendanceController::class, 'export'])->name('attendances-export');
 
 Route::resource('/pendataan-peserta-karisma', StudentController::class);
 
@@ -71,5 +93,11 @@ Route::resource('/pendataan-cofasilitator', CofasilitatorController::class);
 
 Route::get('/download-qr', [SearchQRController::class, 'index'])->name('download-qr.index');
 Route::post('/download-qr', [SearchQRController::class, 'download'])->name('download-qr.download');
+
+Route::get('/download-idcard', [SearchQRController::class, 'idcard'])->name('download-idcard.index');
+Route::post('/download-idcard', [SearchQRController::class, 'idcarddownload'])->name('download-idcard.download');
+
+Route::get('/download', [ApkController::class, 'index'])->name('download.index');
+Route::post('/download', [ApkController::class, 'download'])->name('download.download');
 
 Route::get('/student-card', [StudentCardController::class, 'index']);

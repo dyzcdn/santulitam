@@ -11,6 +11,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Actions\ActionGroup;
 use pxlrbt\FilamentExcel\Columns\Column;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
@@ -88,7 +89,15 @@ class StudentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // Add filters if needed
+                SelectFilter::make('peleton_id')
+                    ->label('Peleton')
+                    ->relationship('peleton', 'name'),
+                // SelectFilter::make('faculty_id')
+                //     ->label('Faculty')
+                //     ->relationship('faculty', 'name'),
+                SelectFilter::make('major_id')
+                    ->label('Major')
+                    ->relationship('major', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

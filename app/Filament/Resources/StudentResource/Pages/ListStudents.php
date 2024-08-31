@@ -25,10 +25,10 @@ class ListStudents extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->label('New Student'),
-            ImportAction::make()
-            ->handleRecordCreation(function($data){
-                return Student::create($data);
-            }),
+            // ImportAction::make()
+            // ->handleRecordCreation(function($data){
+            //     return Student::create($data);
+            // }),
             ActionGroup::make([
                 // Array of actions
             ])
