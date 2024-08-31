@@ -27,6 +27,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 
 class CentralPanelProvider extends PanelProvider
@@ -107,7 +108,14 @@ class CentralPanelProvider extends PanelProvider
                 BannerPlugin::make()
                 ->persistsBannersInDatabase()
                 ->bannerManagerAccessPermission('banner-manager')
-             ])
+            ])
+            ->plugins([
+                FilamentGeneralSettingsPlugin::make()
+                ->canAccess(fn() => auth()->user()->id === 1)
+                ->setSort(3)
+                ->setIcon('heroicon-o-cog')
+                ->setNavigationGroup('Settings')
+            ])
             ->plugin(
                 FilamentEnvEditorPlugin::make()
                     ->navigationGroup('System Tools')
