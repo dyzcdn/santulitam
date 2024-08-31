@@ -92,33 +92,33 @@ Parameter :
 
 ### Attendance
 
-#### Scanner Attendance
+-   Scanner Attendance
 
-#### Attendance Managemer
+-   Attendance Managemer
 
 ### Users Management
 
-#### Add, Edit, Delete Users
+-   Add, Edit, Delete Users
 
-#### Edit Profile
+-   Edit Profile
 
 ### Data Master Management
 
-#### Cofasilitator Management
+-   Cofasilitator Management
 
-#### Peleton Management
+-   Peleton Management
 
-#### Student Management
+-   Student Management
 
 ### Instance Management
 
-#### Faculties Management
+-   Faculties Management
 
-#### Major Management
+-   Major Management
 
 ### Karisma Management
 
-#### Theme Management
+-   Theme Management
 
 ## License
 
