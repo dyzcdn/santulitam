@@ -14,7 +14,8 @@ class ListPeletons extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('New Peleton'),
+                ->label('New Peleton')
+                ->icon('heroicon-o-squares-plus'),
         ];
     }
 }

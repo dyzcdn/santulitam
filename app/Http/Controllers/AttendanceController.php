@@ -139,6 +139,9 @@ class AttendanceController extends Controller
     public function export()
     {
         $peletonId = request('tableFilters.peleton_id.value');
+        $themeId = request('tableFilters.theme_id.value');
+        $checkInFrom = request('tableFilters.check_in.check_in_from');
+        $checkInUntil = request('tableFilters.check_in.check_in_until');
 
         // Ambil nama peleton, jika diperlukan untuk nama file
         $peleton = Peleton::find($peletonId);
@@ -156,6 +159,6 @@ class AttendanceController extends Controller
         // Format nama file dengan nama peleton atau default
         $filename = 'Attendances-' . ($peleton ? $peleton->name : 'All') . '-' . date('ymdHis') . '.xlsx';
 
-        return Excel::download(new ExportAttendance($peletonId), $filename);
+        return Excel::download(new ExportAttendance($peletonId, $themeId, $checkInFrom, $checkInUntil), $filename);
     }
 }

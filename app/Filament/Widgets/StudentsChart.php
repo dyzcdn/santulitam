@@ -6,9 +6,11 @@ use App\Models\Student;
 use Filament\Widgets\ChartWidget;
 use Carbon\Carbon;
 
-class AStudentsChart extends ChartWidget
+class StudentsChart extends ChartWidget
 {
     protected static ?string $heading = 'Students Statistic\'s';
+
+    protected static ?int $sort = 3;
 
     protected function getData(): array
     {

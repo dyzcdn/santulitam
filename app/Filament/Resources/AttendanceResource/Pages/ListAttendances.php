@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\AttendanceResource\Pages;
 
-use App\Filament\Resources\AttendanceResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Widgets\FWAttendancesChart;
+use App\Filament\Widgets\FWAttendancesChart2;
+use App\Filament\Resources\AttendanceResource;
+use App\Filament\Widgets\HWAttendancesOverview;
 
 class ListAttendances extends ListRecords
 {
@@ -16,8 +19,25 @@ class ListAttendances extends ListRecords
 
         return [
             Actions\Action::make('export')
-                ->url(url('/attendances-export?' . $decodeQueryString)),
-            Actions\CreateAction::make()->label('New Attendance'),
+                ->url(url('/attendances-export?' . $decodeQueryString))
+                ->color('warning')
+                ->icon('heroicon-o-arrow-down-on-square'),
+            Actions\CreateAction::make()->label('New Attendance')->icon('heroicon-o-squares-plus'),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            HWAttendancesOverview::class,
+            FWAttendancesChart::class,
+            FWAttendancesChart2::class,
         ];
     }
 }

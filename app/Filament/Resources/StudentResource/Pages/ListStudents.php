@@ -24,7 +24,8 @@ class ListStudents extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('New Student'),
+                ->label('New Student')
+                ->icon('heroicon-o-squares-plus'),
             // ImportAction::make()
             // ->handleRecordCreation(function($data){
             //     return Student::create($data);

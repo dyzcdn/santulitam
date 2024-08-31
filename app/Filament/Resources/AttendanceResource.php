@@ -53,14 +53,18 @@ class AttendanceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('student.name')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('theme.name')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('peleton.name')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('check_in')
                     ->dateTime('d F Y, H:i:s')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -71,7 +75,8 @@ class AttendanceResource extends Resource
                         'Sangat Terlambat' => 'danger',
                         'Tidak Hadir' => 'danger'
                     })
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -85,6 +90,10 @@ class AttendanceResource extends Resource
                 SelectFilter::make('peleton_id')
                     ->label('Peleton')
                     ->relationship('peleton', 'name')
+                    ->options(['all' => 'All']),
+                SelectFilter::make('theme_id')
+                    ->label('Theme')
+                    ->relationship('theme', 'name')
                     ->options(['all' => 'All']),
                 Filter::make('check_in')
                     ->form([

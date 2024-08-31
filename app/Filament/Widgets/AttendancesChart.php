@@ -6,9 +6,11 @@ use App\Models\Attendance;
 use Filament\Widgets\ChartWidget;
 use Carbon\Carbon;
 
-class AattendancesChart extends ChartWidget
+class AttendancesChart extends ChartWidget
 {
     protected static ?string $heading = 'Attendances Statistic\'s';
+
+    protected static ?int $sort = 3;
 
     protected function getData(): array
     {

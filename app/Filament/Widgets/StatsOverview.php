@@ -9,9 +9,11 @@ use App\Models\Cofasilitator;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
-class BStatsOverview extends BaseWidget
+class StatsOverview extends BaseWidget
 {
     protected static ?string $heading = 'Students Statistic\'s';
+
+    protected static ?int $sort = 2;
     
     protected function getStats(): array
     {

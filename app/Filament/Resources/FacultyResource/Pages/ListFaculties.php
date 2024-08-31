@@ -13,7 +13,7 @@ class ListFaculties extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('New Faculty'),
+            Actions\CreateAction::make()->label('New Faculty')->icon('heroicon-o-squares-plus'),
         ];
     }
 }

@@ -13,7 +13,7 @@ class ListCofasilitators extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('New Cofasilitator'),
+            Actions\CreateAction::make()->label('New Cofasilitator')->icon('heroicon-o-squares-plus'),
         ];
     }
 }

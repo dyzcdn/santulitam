@@ -13,7 +13,7 @@ class ListThemes extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make('New Theme')->icon('heroicon-o-squares-plus'),
         ];
     }
 }

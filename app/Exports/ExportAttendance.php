@@ -3,20 +3,23 @@
 namespace App\Exports;
 
 use App\Models\Attendance;
-use App\Models\Student;
-use App\Models\Peleton;
-use App\Models\Theme;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 class ExportAttendance implements FromCollection, WithHeadings, WithMapping
 {
-    protected $id;
+    protected $peletonId;
+    protected $themeId;
+    protected $checkInFrom;
+    protected $checkInUntil;
 
-    public function __construct($id = null)
+    public function __construct($peletonId = null, $themeId = null, $checkInFrom = null, $checkInUntil = null)
     {
-        $this->id = $id;
+        $this->peletonId = $peletonId;
+        $this->themeId = $themeId;
+        $this->checkInFrom = $checkInFrom;
+        $this->checkInUntil = $checkInUntil;
     }
 
     /**
@@ -24,16 +27,25 @@ class ExportAttendance implements FromCollection, WithHeadings, WithMapping
      */
     public function collection()
     {
-        // Cek apakah ID peleton ada
-        if (!$this->id) {
-            // Jika tidak ada ID peleton, ambil semua data kehadiran
-            return Attendance::with('student', 'peleton', 'theme')->get();
-        } else {
-            // Jika ID peleton ada, ambil data dengan filter berdasarkan ID
-            return Attendance::with('student', 'peleton', 'theme')
-                ->where('peleton_id', $this->id)
-                ->get();
+        $query = Attendance::with('student', 'peleton', 'theme');
+
+        if ($this->peletonId) {
+            $query->where('peleton_id', $this->peletonId);
         }
+
+        if ($this->themeId) {
+            $query->where('theme_id', $this->themeId);
+        }
+
+        if ($this->checkInFrom) {
+            $query->whereDate('check_in', '>=', $this->checkInFrom);
+        }
+
+        if ($this->checkInUntil) {
+            $query->whereDate('check_in', '<=', $this->checkInUntil);
+        }
+
+        return $query->get();
     }
 
     /**

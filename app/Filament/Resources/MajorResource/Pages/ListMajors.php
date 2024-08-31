@@ -13,7 +13,7 @@ class ListMajors extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('New Major'),
+            Actions\CreateAction::make()->label('New Major')->icon('heroicon-o-squares-plus'),
         ];
     }
 }
