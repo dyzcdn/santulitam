@@ -5,7 +5,7 @@
 <x-filament-widgets::widget class="fi-account-widget">
     <x-filament::section>
         <div class="flex items-center gap-x-3 py-2">
-            <x-filament-panels::avatar.user size="lg" :user="$user" />
+            <x-avatar.user size="lg" :user="$user" />
 
             <div class="flex-1">
                 <h2
