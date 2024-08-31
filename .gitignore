@@ -3,7 +3,13 @@
 /public/build
 /public/hot
 # /public/storage
-/storage/*.key
+/storage/*
+!/storage/app/public/avatars/
+/storage/app/public/avatars/*
+!/storage/app/public/images/
+/storage/app/public/images/*
+!/storage/app/public/qr-codes/
+/storage/app/public/qr-codes/*
 /vendor
 .env
 .env.backup
