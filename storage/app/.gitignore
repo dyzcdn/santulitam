@@ -1,0 +1,17 @@
+# Mengabaikan semua file di dalam storage
+*
+
+# Mengecualikan .gitignore
+!.gitignore
+
+# Mengecualikan folder public
+!public/
+
+# Mengecualikan folder avatars, images, dan qr-codes
+!public/avatars/
+!public/images/
+!public/qr-codes/
+
+# Mengabaikan semua yang ada di dalam public/android dan public/idcard
+public/android/*
+public/idcard/*
